@@ -31,6 +31,7 @@
 #include "epicsMath.h"
 #include "epicsThread.h"
 #include "epicsTime.h"
+#include "epicsString.h"
 #include "errlog.h"
 #include "errMdef.h"
 
@@ -622,6 +623,8 @@ long dbEntryToAddr(const DBENTRY *pdbentry, DBADDR *paddr)
         if (prset && prset->cvt_dbaddr) {
             return prset->cvt_dbaddr(paddr);
         }
+    } else if (paddr->special == SPC_TIME) {
+        paddr->no_elements = 2;
     }
     return 0;
 }
@@ -916,6 +919,19 @@ long dbGet(DBADDR *paddr, short dbrType,
 
     if (field_type >= DBF_INLINK && field_type <= DBF_FWDLINK) {
         status = getLinkValue(paddr, dbrType, pbuf, nRequest);
+        goto done;
+    }
+  
+    if (paddr->special == SPC_TIME) {
+        
+        //char time_buf[40];
+        //epicsTimeToStrftime(time_buf, 40, "%Y-%m-%d %H:%M:%S.%09f",
+        //&paddr->precord->time);
+        //strncpy(pbuf, time_buf, 40);
+        memcpy(pbuf, &paddr->precord->time, 2 * sizeof(epicsUInt32));
+        ((epicsUInt32 *)pbuf)[0] = paddr->precord->time.secPastEpoch;
+        ((epicsUInt32 *)pbuf)[1] = paddr->precord->time.nsec;
+        // *nRequest = 2;
         goto done;
     }
 

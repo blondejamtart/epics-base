@@ -27,6 +27,7 @@
 #include "epicsTime.h"
 #include "errlog.h"
 #include "errMdef.h"
+#include "special.h"
 
 #define db_accessHFORdb_accessC
 #include "db_access.h"
@@ -109,7 +110,7 @@ struct dbChannel * dbChannel_create(const char *pname)
     if (!chan)
         return NULL;
 
-    if (INVALID_DB_REQ(dbChannelExportType(chan)) ||
+    if ((INVALID_DB_REQ(dbChannelExportType(chan)) && !(chan->addr.special == SPC_TIME)) ||
         dbChannelOpen(chan)) {
         dbChannelDelete(chan);
         return NULL;

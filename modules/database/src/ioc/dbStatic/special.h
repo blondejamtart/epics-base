@@ -38,8 +38,10 @@ extern "C" {
 /* Specific to calculation records */
 #define SPC_CALC	103	/*The CALC field is being changed*/
 
+#define SPC_TIME        8
 
-#define SPC_NTYPES 9
+
+#define SPC_NTYPES 10
 typedef struct mapspcType{
 	char	*strvalue;
 	int	value;
@@ -52,6 +54,7 @@ mapspcType pamapspcType[SPC_NTYPES] = {
 	{"SPC_NOMOD",SPC_NOMOD},
 	{"SPC_DBADDR",SPC_DBADDR},
 	{"SPC_SCAN",SPC_SCAN},
+	{"SPC_TIME",SPC_TIME},
 	{"SPC_ALARMACK",SPC_ALARMACK},
 	{"SPC_AS",SPC_AS},
 	{"SPC_MOD",SPC_MOD},

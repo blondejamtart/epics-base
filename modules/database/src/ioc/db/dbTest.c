@@ -346,6 +346,13 @@ long dbgf(const char *pname)
         printBuffer(status, DBR_STRING, pbuffer, 0L, 0L,
             no_elements, &msg_Buff, 10);
     }
+    else if (addr.special == SPC_TIME) {
+         long status = dbGetField(&addr, DBR_ULONG, pbuffer,
+            &options, &no_elements, NULL);
+
+        printBuffer(status, DBR_ULONG, pbuffer, 0L, 0L,
+            no_elements, &msg_Buff, 10);
+    }
     else {
         long status = dbGetField(&addr, addr.dbr_field_type, pbuffer,
             &options, &no_elements, NULL);

@@ -15,6 +15,7 @@
 #include <chfPlugin.h>
 #include <dbLock.h>
 #include <db_field_log.h>
+#include <special.h>
 #include <epicsExport.h>
 
 static db_field_log* filter(void* pvt, dbChannel *chan, db_field_log *pfl) {
@@ -22,7 +23,7 @@ static db_field_log* filter(void* pvt, dbChannel *chan, db_field_log *pfl) {
     epicsTimeGetCurrent(&now);
 
     /* If string or array, must make a copy (to ensure coherence between time and data) */
-    if (pfl->type == dbfl_type_rec) {
+    if (pfl->type == dbfl_type_rec || chan->addr.special == SPC_TIME) {
         dbScanLock(dbChannelRecord(chan));
         dbChannelMakeArrayCopy(pvt, pfl, chan);
         dbScanUnlock(dbChannelRecord(chan));
