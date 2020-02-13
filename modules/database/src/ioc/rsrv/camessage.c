@@ -2568,7 +2568,7 @@ int rsrvCheckPut (const struct channel_in_use *pciu)
     /*
      * SPC_NOMOD fields are always unwritable
      */
-    if (dbChannelSpecial(pciu->dbch) == SPC_NOMOD) {
+    if (dbChannelSpecial(pciu->dbch) == SPC_NOMOD || dbChannelSpecial(pciu->dbch) == SPC_TIME) {
         return 0;
     }
     else {

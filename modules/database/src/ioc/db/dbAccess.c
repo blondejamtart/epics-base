@@ -120,7 +120,7 @@ long dbPutSpecial(DBADDR *paddr,int pass)
 
     prset = dbGetRset(paddr);
     if(special<100) { /*global processing*/
-	if((special==SPC_NOMOD) && (pass==0)) {
+	if((special==SPC_NOMOD || special==SPC_TIME) && (pass==0)) {
 	    status = S_db_noMod;
 	    recGblDbaddrError(status,paddr,"dbPut");
 	    return(status);
@@ -923,15 +923,15 @@ long dbGet(DBADDR *paddr, short dbrType,
     }
   
     if (paddr->special == SPC_TIME) {
-        
-        //char time_buf[40];
-        //epicsTimeToStrftime(time_buf, 40, "%Y-%m-%d %H:%M:%S.%09f",
-        //&paddr->precord->time);
-        //strncpy(pbuf, time_buf, 40);
-        memcpy(pbuf, &paddr->precord->time, 2 * sizeof(epicsUInt32));
-        ((epicsUInt32 *)pbuf)[0] = paddr->precord->time.secPastEpoch;
-        ((epicsUInt32 *)pbuf)[1] = paddr->precord->time.nsec;
-        // *nRequest = 2;
+        if (dbrType == DBR_STRING) {
+            char time_buf[40];
+            epicsTimeToStrftime(time_buf, 40, "%Y-%m-%d %H:%M:%S.%09f",
+                                &paddr->precord->time);
+            strncpy(pbuf, time_buf, 40);
+        } else {           
+            ((epicsUInt32 *)pbuf)[0] = paddr->precord->time.secPastEpoch;
+            ((epicsUInt32 *)pbuf)[1] = paddr->precord->time.nsec;
+        }
         goto done;
     }
 
